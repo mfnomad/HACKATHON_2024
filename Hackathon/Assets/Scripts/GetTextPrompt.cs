@@ -10,6 +10,8 @@ public class GetTextPrompt : MonoBehaviour
 
     public void get()
     {
+        // Set hint to inactive
+        hint.gameObject.SetActive(false);
         string url = "https://www.airbnb.com/health";
         StartCoroutine(GetGameLevelCoroutine(url));   
     }

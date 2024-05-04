@@ -1,28 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerStepsOnHint : MonoBehaviour
 {
-    // This method is called when another collider enters the trigger collider attached to this GameObject
-    private void OnTriggerEnter2D(Collider2D other)
+    public TMP_Text hint;
+    public GameObject player;
+    
+    private void CheckPlayerPosition()
     {
-        // Check if the other collider belongs to the player
-        if (other.CompareTag("PF Player"))
+        // Get the player's position
+        Vector3 playerPosition = player.transform.position;
+
+        // Get the prop's position
+        Vector3 propPosition = transform.position;
+
+        // Check if the player's coordinates cross the prop's coordinates
+        if (playerPosition.x >= propPosition.x - 0.5f && playerPosition.x <= propPosition.x + 0.5f &&
+            playerPosition.y >= propPosition.y - 0.5f && playerPosition.y <= propPosition.y + 0.5f)
         {
-            // Get the player's position
-            Vector3 playerPosition = other.transform.position;
-
-            // Get the prop's position
-            Vector3 propPosition = transform.position;
-
-            // Check if the player's coordinates cross the prop's coordinates
-            if (playerPosition.x >= propPosition.x - 0.5f && playerPosition.x <= propPosition.x + 0.5f &&
-                playerPosition.y >= propPosition.y - 0.5f && playerPosition.y <= propPosition.y + 0.5f)
-            {
-                // Log the message to the console
-                Debug.Log("Player touched prop");
-            }
+            // Hint is shown
+            hint.gameObject.SetActive(true);
         }
+        else
+        {
+            // Hint is hidden
+            hint.gameObject.SetActive(false);
+        }
+    }
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        CheckPlayerPosition();        
     }
 }
