@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class GetTextPrompt : MonoBehaviour
 {
-    public TMP_Text sample_tmp;
+    public TMP_Text hint;
 
     public void get()
     {
@@ -35,11 +35,7 @@ public class GetTextPrompt : MonoBehaviour
             // Aquí tenemos que parsear el texto para obtener cada una de las 3 pistas
 
             //Vector3 randomPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5), 0);
-            Vector3 randomPosition = new Vector3(0, 0, 0);
-            TMP_Text newClue = Instantiate(sample_tmp, randomPosition, Quaternion.identity);
-            newClue.transform.SetParent(GameObject.Find("Canvas").transform);
-            newClue.text = "Esto es una pista";
-            newClue.fontSize = 20;
+            hint.text = "Esta es la pista: " + response;
             Debug.Log(response);
 
         }
