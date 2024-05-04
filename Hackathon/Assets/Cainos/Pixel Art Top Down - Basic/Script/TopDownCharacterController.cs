@@ -44,7 +44,15 @@ namespace Cainos.PixelArtTopDown_Basic
             dir.Normalize();
             animator.SetBool("IsMoving", dir.magnitude > 0);
 
-            GetComponent<Rigidbody2D>().velocity = speed * dir;
+            // Apply movement without clamping
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            rb.velocity = speed * dir;
+
+            // Perform clamping only when necessary
+            Vector2 newPos = rb.position;
+            newPos.x = Mathf.Clamp(newPos.x, 33.5f, 40f);
+            newPos.y = Mathf.Clamp(newPos.y, -25.5f, -16.5f);
+            rb.position = newPos;
         }
     }
 }
