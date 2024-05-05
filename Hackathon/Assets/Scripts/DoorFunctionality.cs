@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using static IAController;
+using static Gameplay;
 
 public class DoorFunctionality : MonoBehaviour
 {
@@ -13,9 +16,15 @@ public class DoorFunctionality : MonoBehaviour
     public GameObject openDoorWindow;
     public GameObject openedDoorSprite;
 
-    private bool isWindowShown = false;
+    // Vars for IAController
+    private IAController iaController;
+    public TMP_Text hint;
+    public RawImage[] images;
 
-    
+    //Vars fro gameplay
+    private Gameplay gameplay;
+
+    private bool isWindowShown = false;
 
 
     void CheckPlayerPositionCloseToDoors()
@@ -34,7 +43,6 @@ public class DoorFunctionality : MonoBehaviour
                 if (Input.GetKeyDown(interactionKey))
                 {
                     //Player interacts with door by pressing E
-                    Debug.Log("Player interacted with door:" + door.name);
                     isWindowShown = !isWindowShown;
 
 
@@ -48,14 +56,22 @@ public class DoorFunctionality : MonoBehaviour
                 //Check if openDoorWindow has been clicked on by player
                 if (isWindowShown && Input.GetMouseButtonDown(0))
                 {
-                    bool isDoorOpenDoorClicked = false;
                     Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
                     
                     if (hitCollider != null && hitCollider.gameObject == openDoorWindow)
                     {
-                        Debug.Log("Opened Door Window clicked:");
-                        isDoorOpenDoorClicked = true;
+                        int selectedDoorIndex = 0;
+
+                        if (door.name == "door1") {
+                            selectedDoorIndex = 1;
+                        } else if (door.name == "door2") {
+                            selectedDoorIndex = 2;
+                        } else if (door.name == "door3") {
+                            selectedDoorIndex = 3;
+                        }
+
+                        gameplay.NextTrial(iaController.getNumCorrecta() == selectedDoorIndex);
                         
                         changeDoorSpriteToOpen(door);
                     }
@@ -87,6 +103,10 @@ public class DoorFunctionality : MonoBehaviour
         interactText.gameObject.SetActive(false);
         showImageWindow.SetActive(false);
         openDoorWindow.SetActive(false);
+        iaController = GetComponent<IAController>();
+        iaController.getText(hint, images[0], images[1], images[2]);
+        gameplay = GetComponent<Gameplay>();
+        gameplay.HideAssets();
     }
 
     // Update is called once per frame

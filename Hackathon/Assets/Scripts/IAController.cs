@@ -18,25 +18,23 @@ public class IAController : MonoBehaviour
     private int numCorrecta;
     private string pistaHaiku;
 
-    public TMP_Text hint;
-    public RawImage image1;
-    public RawImage image2;
-    public RawImage image3;
+    private TMP_Text hint;
+    private RawImage image1;
+    private RawImage image2;
+    private RawImage image3;
 
-
-    void Start()
+    public int getNumCorrecta()
     {
-        getText();
-
+        return numCorrecta;
     }
 
-    void Update()
+    public void getText(TMP_Text hint, RawImage image1, RawImage image2, RawImage image3)
     {
-        
-    }
-
-    public void getText()
-    {
+        Debug.Log("getText");
+        this.hint = hint;
+        this.image1 = image1;
+        this.image2 = image2;
+        this.image3 = image3;
         StartCoroutine(GetGameLevelCoroutine(textUrl));
     }
 
@@ -118,7 +116,6 @@ public class IAController : MonoBehaviour
     // Get an image
     IEnumerator GenerateImageFromDallE(string prompt, RawImage ri)
     {
-        Debug.Log("Entré");
         DalleJSON dalleJSON = new DalleJSON();
         dalleJSON.model = "dall-e-2";
         dalleJSON.prompt = prompt;

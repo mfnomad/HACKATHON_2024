@@ -1,28 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using static IAController;
 
 public class Gameplay : MonoBehaviour
 {
     private int trialsLeft = 3;
-    private int score = 0;
 
     public GameObject player;
     public TMP_Text hint;
-    public GameObject[] images;
+    public RawImage[] images;
 
     public GameObject goodEnding;
     public GameObject badEnding;
 
+    private IAController iaController;
+
     public void HideAssets()
     {
-        foreach (GameObject image in images)
-        {
-            image.SetActive(false);
-        }
-        player.SetActive(false);
-        hint.gameObject.SetActive(false);
+        goodEnding.SetActive(false);
+        badEnding.SetActive(false);
     }
 
     public void ResetPlayerPosition()
@@ -31,19 +30,9 @@ public class Gameplay : MonoBehaviour
         player.SetActive(true);
     }
 
-    public void UpdateScore()
-    {
-        score += 1;
-    }
-
     public void UpdateTrialsValue()
     {
         trialsLeft -= 1;
-    }
-
-    public int GetScore()
-    {
-        return score;
     }
 
     public int GetTrials()
@@ -57,19 +46,24 @@ public class Gameplay : MonoBehaviour
         {
             if (correct)
             {
-                UpdateScore();
+                iaController = GetComponent<IAController>();
+                iaController.getText(hint, images[0], images[1], images[2]);
+                UpdateTrialsValue();
+                HideAssets();
+                ResetPlayerPosition();
+                /* Transition fade to black - 3sec
+                *  Get next hint
+                *  Get images
+                *  Update level
+                *  Transition fade to clear
+                */
+                Debug.Log("Updating level...");
+                Debug.Log("Next trial!");
             }
-            UpdateTrialsValue();
-            HideAssets();
-            ResetPlayerPosition();
-            /* Transition fade to black - 3sec
-            *  Get next hint
-            *  Get images
-            *  Update level
-            *  Transition fade to clear
-            */
-            Debug.Log("Updating level...");
-            Debug.Log("Next trial!");
+            else
+            {
+                EndGame();
+            }
         }
         else
         {
@@ -80,7 +74,6 @@ public class Gameplay : MonoBehaviour
     public void ResetGame()
     {
         trialsLeft = 3;
-        score = 0;
         goodEnding.SetActive(false);
         badEnding.SetActive(false);
     }
@@ -89,19 +82,12 @@ public class Gameplay : MonoBehaviour
     {
         if (trialsLeft == 0)
         {
-            if (score == 3)
-            {
-                Debug.Log("You win!");
-            }
-            else
-            {
-                Debug.Log("You lose!");
-            }
+            Debug.Log("You win!");
         }
-    }
-
-    public void Start()
-    {
-        this.ResetGame();
+        else
+        {
+            Debug.Log("Game over!");
+            badEnding.SetActive(true);
+        }
     }
 }
