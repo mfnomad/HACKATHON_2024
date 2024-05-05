@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using System;
-using TMPro;
 using System.Text.RegularExpressions;
+using TMPro;
 
-public class GetTextPrompt : MonoBehaviour
+public class IAController : MonoBehaviour
 {
-    public TMP_Text hint;
     private string apiKey = "";
-    private string url = "https://api.openai.com/v1/chat/completions";
+    private string imageUrl = "https://api.openai.com/v1/images/generations";
+    private string textUrl = "https://api.openai.com/v1/chat/completions";
 
     private string promptUno;
     private string promptDos;
@@ -17,16 +17,32 @@ public class GetTextPrompt : MonoBehaviour
     private int numCorrecta;
     private string pistaHaiku;
 
-    
+    public TMP_Text hint;
+    public RawImage image1;
+    public RawImage image2;
+    public RawImage image3;
 
-    public void get()
+    private Texture i1;
+    private Texture i2;
+    private Texture i3;
+
+    void Start()
     {
-        // Set hint to inactive
-        hint.gameObject.SetActive(false);
-
-        StartCoroutine(GetGameLevelCoroutine(url));   
+        getText();
+        hint.text = pistaHaiku;
     }
 
+    void Update()
+    {
+        
+    }
+
+    public void getText()
+    {
+        StartCoroutine(GetGameLevelCoroutine(textUrl));
+    }
+
+    // Function to get the prompts and the clue
     IEnumerator GetGameLevelCoroutine(string url)
     {
         PromptExterno promptExterno = new PromptExterno();
@@ -64,36 +80,28 @@ public class GetTextPrompt : MonoBehaviour
                 string responseText = webRequest.downloadHandler.text;
                 Debug.Log("Response: " + responseText);
 
-                // Deserializa la respuesta
                 OpenAIResponse response = JsonUtility.FromJson<OpenAIResponse>(responseText);
 
-                // Verifica si hay choices y messages disponibles
                 if (response.choices != null && response.choices.Length > 0 && response.choices[0].message != null)
                 {
                     string content = response.choices[0].message.content;
                     Debug.Log("Content: " + content);
                     parseString(content);
-                    hint.text = content;  // Asigna el contenido extraído al texto de la UI
                 }
                 else
                 {
                     Debug.LogWarning("Invalid response received.");
                 }
             }
-        }        
-    }  
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        get();
+        }
     }
 
+    // Parse prompt to get individual prompts and clue
     void parseString(string text)
     {
         string ExtractText(string pattern)
         {
-            Regex regex = new Regex(pattern, RegexOptions.Singleline);  
+            Regex regex = new Regex(pattern, RegexOptions.Singleline);
             Match match = regex.Match(text);
             return match.Success ? match.Groups[1].Value : "No Match Found";
         }
@@ -101,22 +109,75 @@ public class GetTextPrompt : MonoBehaviour
         promptUno = ExtractText(@"promptuno (.*) promptuno");
         promptDos = ExtractText(@"promptdos (.*) promptdos");
         promptTres = ExtractText(@"prompttres (.*) prompttres");
-        numCorrecta = int.Parse(ExtractText(@"numcorrecta (\d+) numcorrecta"));  
+        numCorrecta = int.Parse(ExtractText(@"numcorrecta (\d+) numcorrecta"));
         pistaHaiku = ExtractText(@"pistahaiku (.*?) pistahaiku");
-
-        Debug.Log($"Prompt Uno: {promptUno}");
-        Debug.Log($"Prompt Dos: {promptDos}");
-        Debug.Log($"Prompt Tres: {promptTres}");
-        Debug.Log($"Número Correcta: {numCorrecta}");
-        Debug.Log($"Pista Haiku: {pistaHaiku}");
     }
 
-    [Serializable]
-    private class AIAPIResponse
+    // Get an image
+    IEnumerator GenerateImageFromDallE(string prompt)
     {
-        public string text;
+        DalleJSON dalleJSON = new DalleJSON();
+        dalleJSON.model = "dall-e-2";
+        dalleJSON.prompt = prompt;
+        dalleJSON.size = "1024x1024";
+        dalleJSON.n = 1;
+
+        string jsonBody = JsonUtility.ToJson(dalleJSON);
+        using (UnityWebRequest webRequest = new UnityWebRequest(apiUrl, "POST"))
+        {
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+            webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+            webRequest.SetRequestHeader("Authorization", "Bearer " + apiKey);
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError(webRequest.error);
+                Debug.LogError("Response: " + webRequest.downloadHandler.text);
+            }
+            else
+            {
+                var jsonResponse = JsonUtility.FromJson<AIAPIResponse>(webRequest.downloadHandler.text);
+                if (jsonResponse.data != null && jsonResponse.data.Length > 0)
+                {
+                    string imageUrl = jsonResponse.data[0].url; 
+                    Debug.Log(imageUrl);
+                    StartCoroutine(DownloadImage(imageUrl));
+                }
+                else
+                {
+                    Debug.LogError("No data available.");
+                }
+            }
+        }
     }
 
+    // Download the image
+    IEnumerator DownloadImage(string imageUrl, Texture t)
+    {
+        UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageUrl);
+        yield return imageRequest.SendWebRequest();
+
+        if (imageRequest.result == UnityWebRequest.Result.ConnectionError || imageRequest.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError(imageRequest.error);
+        }
+        else
+        {
+            t = DownloadHandlerTexture.GetContent(imageRequest);
+        }
+    }
+
+    public void setImageToObject(Texture i, RawImage image)
+    {
+        image.texture = i;
+    }
+
+
+    // Classes for text request
     [Serializable]
     public class PromptExterno
     {
@@ -135,7 +196,7 @@ public class GetTextPrompt : MonoBehaviour
     public class OpenAIResponse
     {
         public string id;
-        public string objectType;  
+        public string objectType;
         public int created;
         public string model;
         public Choice[] choices;
@@ -146,7 +207,7 @@ public class GetTextPrompt : MonoBehaviour
     {
         public int index;
         public Message message;
-        public object logProbs;  
+        public object logProbs;
         public string finish_reason;
     }
 
@@ -155,5 +216,28 @@ public class GetTextPrompt : MonoBehaviour
     {
         public string role;
         public string content;
+    }
+
+    // Classes for image request
+    [Serializable]
+    public class AIAPIResponse
+    {
+        public int created;
+        public Data[] data;
+    }
+
+    [Serializable]
+    public class Data
+    {
+        public string url;
+    }
+
+    [Serializable]
+    public class DalleJSON
+    {
+        public string model;
+        public string prompt;
+        public string size;
+        public int n;
     }
 }
