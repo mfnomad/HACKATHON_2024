@@ -17,8 +17,8 @@ public class PlayerStepsOnHint : MonoBehaviour
         Vector3 propPosition = transform.position;
 
         // Check if the player's coordinates cross the prop's coordinates
-        if (playerPosition.x >= propPosition.x - 0.5f && playerPosition.x <= propPosition.x + 0.5f &&
-            playerPosition.y >= propPosition.y - 0.5f && playerPosition.y <= propPosition.y + 0.5f)
+        if (playerPosition.x >= propPosition.x - 1 && playerPosition.x <= propPosition.x + 1 &&
+            playerPosition.y >= propPosition.y - 0.75f && playerPosition.y <= propPosition.y + 0.75f)
         {
             // Hint is shown
             hint.gameObject.SetActive(true);
