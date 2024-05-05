@@ -8,15 +8,35 @@ public class Gameplay : MonoBehaviour
     private int trialsLeft = 3;
     private int score = 0;
 
+    public GameObject player;
+    public TMP_Text hint;
+    public GameObject[] images;
+
     public GameObject goodEnding;
     public GameObject badEnding;
+
+    public void HideAssets()
+    {
+        foreach (GameObject image in images)
+        {
+            image.SetActive(false);
+        }
+        player.SetActive(false);
+        hint.gameObject.SetActive(false);
+    }
+
+    public void ResetPlayerPosition()
+    {
+        player.transform.position = new Vector3(0, -4, 0);
+        player.SetActive(true);
+    }
 
     public void UpdateScore()
     {
         score += 1;
     }
 
-    public void UpdateTrials()
+    public void UpdateTrialsValue()
     {
         trialsLeft -= 1;
     }
@@ -39,7 +59,9 @@ public class Gameplay : MonoBehaviour
             {
                 UpdateScore();
             }
-            UpdateTrials();
+            UpdateTrialsValue();
+            HideAssets();
+            ResetPlayerPosition();
             /* Transition fade to black - 3sec
             *  Get next hint
             *  Get images

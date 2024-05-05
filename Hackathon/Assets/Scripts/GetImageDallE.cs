@@ -43,7 +43,7 @@ public class GetImageDallE : MonoBehaviour
                 var jsonResponse = JsonUtility.FromJson<AIAPIResponse>(webRequest.downloadHandler.text);
                 if (jsonResponse.data != null && jsonResponse.data.Length > 0)
                 {
-                    string imageUrl = jsonResponse.data[0].url; // Accede al primer elemento del array 'data'
+                    string imageUrl = jsonResponse.data[0].url; 
                     Debug.Log(imageUrl);
                     StartCoroutine(DownloadImage(imageUrl));
                 }
