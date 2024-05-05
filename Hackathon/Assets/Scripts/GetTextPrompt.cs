@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System;
 using TMPro;
+using System.Text.RegularExpressions;
 
 public class GetTextPrompt : MonoBehaviour
 {
@@ -22,14 +23,14 @@ public class GetTextPrompt : MonoBehaviour
     {
         PromptExterno promptExterno = new PromptExterno();
         PromptInterno interno = new PromptInterno();
-        interno.content = "Quiero que escribas 3 prompts para generar imágenes de DALL-E. Las 3 prompts deben tener alguna temática en común, pero resultar en imágenes diferentes. " +
-            "Quiero que cada prompt sea de menos de 20 palabras. Después de eso escribe un Haiku referenciando a alguna de las 3 prompts seleccionada aleatoriamente. " +
-            "El Haiku funcionará como pista para que un humano elija una de las 3 imágenes, entonces debe estar referenciado con el número de la prompt a la que se refiere. También es necesario que la pista no sea evidente. " +
-            "Sigue la siguiente estructura y no escribas nada más:" +
-            "1 (Aquí escribes la prompt para la primera imagen.)\n" +
-            "2 (Aquí escribes la prompt para la segunda imagen.)\n" +
-            "3 (Aquí escribes la prompt para la segunda imagen.)\n" +
-            "(Aquí escribes el número de la imagen a la que hace referencia el Haiku) (Aquí escribes el Haiku)";
+        interno.content = "I want you to write 3 very random and creative prompts for generating DALL-E images in English. The 3 prompts should have something in common but result in different images. " +
+            "I want each prompt to be less than 20 words. After that, write a Haiku referencing one of the 3 randomly selected prompts. " +
+            "The Haiku will serve as a clue for a human to choose one of the 3 images, so it should reference the number of the prompt it pertains to. The clue should also not be obvious. " +
+            "Follow the structure below and write nothing else:\n" +
+            "promptuno (Here you write the prompt for the first image.) promptuno\n" +
+            "promptdos (Here you write the prompt for the second image.) promptdos\n" +
+            "prompttres (Here you write the prompt for the third image.) prompttres\n" +
+            "numcorrecta (Here you put the number of the image the Haiku refers to) numcorrecta pistahaiku (Here you write the Haiku) pistahaiku";
         interno.role = "user";
         promptExterno.messages = new PromptInterno[] { interno };
         promptExterno.model = "gpt-4-turbo-2024-04-09";
@@ -63,6 +64,7 @@ public class GetTextPrompt : MonoBehaviour
                 {
                     string content = response.choices[0].message.content;
                     Debug.Log("Content: " + content);
+                    parseString(content);
                     hint.text = content;  // Asigna el contenido extraído al texto de la UI
                 }
                 else
@@ -79,10 +81,26 @@ public class GetTextPrompt : MonoBehaviour
         get();
     }
 
-    // Update is called once per frame
-    void Update()
+    void parseString(string text)
     {
-        
+        string ExtractText(string pattern)
+        {
+            Regex regex = new Regex(pattern, RegexOptions.Singleline);  
+            Match match = regex.Match(text);
+            return match.Success ? match.Groups[1].Value : "No Match Found";
+        }
+
+        string promptUno = ExtractText(@"promptuno (.*) promptuno");
+        string promptDos = ExtractText(@"promptdos (.*) promptdos");
+        string promptTres = ExtractText(@"prompttres (.*) prompttres");
+        int numCorrecta = int.Parse(ExtractText(@"numcorrecta (\d+) numcorrecta"));  
+        string pistaHaiku = ExtractText(@"pistahaiku (.*?) pistahaiku");
+
+        Debug.Log($"Prompt Uno: {promptUno}");
+        Debug.Log($"Prompt Dos: {promptDos}");
+        Debug.Log($"Prompt Tres: {promptTres}");
+        Debug.Log($"Número Correcta: {numCorrecta}");
+        Debug.Log($"Pista Haiku: {pistaHaiku}");
     }
 
     [Serializable]
