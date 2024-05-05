@@ -10,7 +10,8 @@ public class GetImageDallE : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(GenerateImageFromDallE("a sad cat"));
+        //StartCoroutine(GenerateImageFromDallE("a sad cat"));
+        StartCoroutine(DownloadImage("https://image.tmdb.org/t/p/w500/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg"));
     }
 
     IEnumerator GenerateImageFromDallE(string prompt)
@@ -40,9 +41,16 @@ public class GetImageDallE : MonoBehaviour
             else
             {
                 var jsonResponse = JsonUtility.FromJson<AIAPIResponse>(webRequest.downloadHandler.text);
-                string imageUrl = jsonResponse.url;
-                Debug.Log(imageUrl);
-                StartCoroutine(DownloadImage(imageUrl));
+                if (jsonResponse.data != null && jsonResponse.data.Length > 0)
+                {
+                    string imageUrl = jsonResponse.data[0].url; // Accede al primer elemento del array 'data'
+                    Debug.Log(imageUrl);
+                    StartCoroutine(DownloadImage(imageUrl));
+                }
+                else
+                {
+                    Debug.LogError("No data available.");
+                }
             }
         }
     }
@@ -83,7 +91,14 @@ public class GetImageDallE : MonoBehaviour
     }
 
     [Serializable]
-    private class AIAPIResponse
+    public class AIAPIResponse
+    {
+        public int created;
+        public Data[] data;
+    }
+
+    [Serializable]
+    public class Data
     {
         public string url;
     }
