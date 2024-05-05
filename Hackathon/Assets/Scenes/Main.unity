@@ -286,7 +286,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 209539242}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: InteractionWindows
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,14 +301,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 209539241}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1448236, y: 0.441884, z: -0.046074506}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.1448236, y: 0.441884, z: -100.046074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2046718805}
   - {fileID: 1927124403}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1816254392}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &255778548
 GameObject:
@@ -2682,6 +2682,7 @@ Transform:
   - {fileID: 469019335}
   - {fileID: 1122696254}
   - {fileID: 1382750846}
+  - {fileID: 209539242}
   m_Father: {fileID: 1667014601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1862471133
@@ -3057,9 +3058,8 @@ MonoBehaviour:
   player: {fileID: 1651593381}
   interactText: {fileID: 1619643823}
   interactionKey: 101
-  interactionWindows:
-  - {fileID: 2046718804}
-  - {fileID: 1927124402}
+  showImageWindow: {fileID: 2046718804}
+  openDoorWindow: {fileID: 1927124402}
 --- !u!1 &1927124402
 GameObject:
   m_ObjectHideFlags: 0
@@ -3070,7 +3070,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1927124403}
   - component: {fileID: 1927124404}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: OpenDoorWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3087,7 +3087,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.1, y: 0.04, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 209539242}
@@ -3133,7 +3133,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 17bb4794e7220c247b2b926c5a022e03, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d9303fe03a20fed4e96d2b509f686b98, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3288,7 +3288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2046718805}
   - component: {fileID: 2046718806}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: ShowImageWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3305,7 +3305,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.23, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 209539242}
@@ -3351,7 +3351,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d9303fe03a20fed4e96d2b509f686b98, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17bb4794e7220c247b2b926c5a022e03, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3514,7 +3514,6 @@ SceneRoots:
   - {fileID: 699170369}
   - {fileID: 1742070971}
   - {fileID: 1519658742}
-  - {fileID: 209539242}
   - {fileID: 5628018140380570485}
   - {fileID: 858401417}
   - {fileID: 1374368470}
