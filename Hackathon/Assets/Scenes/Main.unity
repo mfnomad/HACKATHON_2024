@@ -583,7 +583,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &425683204
 MonoBehaviour:
@@ -1016,7 +1016,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &601300267
 GameObject:
@@ -1451,7 +1451,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &911834464
 MonoBehaviour:
@@ -3360,10 +3360,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d563b1fda3163264fb8c45bfd678a0ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hint: {fileID: 0}
-  image1: {fileID: 425683202}
-  image2: {fileID: 911834462}
-  image3: {fileID: 568036362}
+  hint: {fileID: 427804345}
+  image1: {fileID: 425683204}
+  image2: {fileID: 911834464}
+  image3: {fileID: 568036363}
 --- !u!4 &1990425054
 Transform:
   m_ObjectHideFlags: 0
