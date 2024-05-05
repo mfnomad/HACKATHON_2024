@@ -40,8 +40,8 @@ public class DoorFunctionality : MonoBehaviour
 
                     showImageWindow.transform.position = new Vector3(doorPosition.x - 1.5f, doorPosition.y, doorPosition.z);
                     openDoorWindow.transform.position = new Vector3(doorPosition.x + 1.5f, doorPosition.y, doorPosition.z);
-                    showImageWindow.SetActive(true);
-                    openDoorWindow.SetActive(true);
+                    showImageWindow.SetActive(isWindowShown);
+                    openDoorWindow.SetActive(isWindowShown);
 
 
                 }
@@ -54,8 +54,9 @@ public class DoorFunctionality : MonoBehaviour
                     
                     if (hitCollider != null && hitCollider.gameObject == openDoorWindow)
                     {
+                        Debug.Log("Opened Door Window clicked:");
                         isDoorOpenDoorClicked = true;
-                        //
+                        
                         changeDoorSpriteToOpen(door);
                     }
                 }
@@ -101,9 +102,10 @@ public class DoorFunctionality : MonoBehaviour
 
     void changeDoorSpriteToOpen(GameObject door_)
     {
-        
-        GameObject openedDoor = GameObject.Find(door_.name);
+        // Get the SpriteRenderer component of the door
+        SpriteRenderer doorRenderer = door_.GetComponent<SpriteRenderer>();
 
-        openedDoor = openedDoorSprite;
+        // Assign the opened door sprite to the SpriteRenderer
+        doorRenderer.sprite = openedDoorSprite.GetComponent<SpriteRenderer>().sprite;
     }
 }
