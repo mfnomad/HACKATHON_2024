@@ -4,6 +4,7 @@ using System.Collections;
 using System;
 using System.Text.RegularExpressions;
 using TMPro;
+using UnityEngine.UI;
 
 public class IAController : MonoBehaviour
 {
@@ -22,14 +23,11 @@ public class IAController : MonoBehaviour
     public RawImage image2;
     public RawImage image3;
 
-    private Texture i1;
-    private Texture i2;
-    private Texture i3;
 
     void Start()
     {
         getText();
-        hint.text = pistaHaiku;
+
     }
 
     void Update()
@@ -107,15 +105,20 @@ public class IAController : MonoBehaviour
         }
 
         promptUno = ExtractText(@"promptuno (.*) promptuno");
+        StartCoroutine(GenerateImageFromDallE(promptUno, image1));
         promptDos = ExtractText(@"promptdos (.*) promptdos");
+        StartCoroutine(GenerateImageFromDallE(promptDos, image2));
         promptTres = ExtractText(@"prompttres (.*) prompttres");
+        StartCoroutine(GenerateImageFromDallE(promptTres, image3));
         numCorrecta = int.Parse(ExtractText(@"numcorrecta (\d+) numcorrecta"));
         pistaHaiku = ExtractText(@"pistahaiku (.*?) pistahaiku");
+        hint.text = pistaHaiku;
     }
 
     // Get an image
-    IEnumerator GenerateImageFromDallE(string prompt)
+    IEnumerator GenerateImageFromDallE(string prompt, RawImage ri)
     {
+        Debug.Log("Entré");
         DalleJSON dalleJSON = new DalleJSON();
         dalleJSON.model = "dall-e-2";
         dalleJSON.prompt = prompt;
@@ -123,7 +126,7 @@ public class IAController : MonoBehaviour
         dalleJSON.n = 1;
 
         string jsonBody = JsonUtility.ToJson(dalleJSON);
-        using (UnityWebRequest webRequest = new UnityWebRequest(apiUrl, "POST"))
+        using (UnityWebRequest webRequest = new UnityWebRequest(imageUrl, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
             webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
@@ -145,7 +148,7 @@ public class IAController : MonoBehaviour
                 {
                     string imageUrl = jsonResponse.data[0].url; 
                     Debug.Log(imageUrl);
-                    StartCoroutine(DownloadImage(imageUrl));
+                    StartCoroutine(DownloadImage(imageUrl, ri));
                 }
                 else
                 {
@@ -156,7 +159,7 @@ public class IAController : MonoBehaviour
     }
 
     // Download the image
-    IEnumerator DownloadImage(string imageUrl, Texture t)
+    IEnumerator DownloadImage(string imageUrl, RawImage ri)
     {
         UnityWebRequest imageRequest = UnityWebRequestTexture.GetTexture(imageUrl);
         yield return imageRequest.SendWebRequest();
@@ -167,15 +170,10 @@ public class IAController : MonoBehaviour
         }
         else
         {
-            t = DownloadHandlerTexture.GetContent(imageRequest);
+            Texture t = DownloadHandlerTexture.GetContent(imageRequest);
+            ri.texture = t;
         }
     }
-
-    public void setImageToObject(Texture i, RawImage image)
-    {
-        image.texture = i;
-    }
-
 
     // Classes for text request
     [Serializable]
