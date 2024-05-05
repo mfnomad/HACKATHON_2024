@@ -10,8 +10,8 @@ public class GetImageDallE : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(GenerateImageFromDallE("a sad cat"));
-        StartCoroutine(DownloadImage("https://image.tmdb.org/t/p/w500/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg"));
+        StartCoroutine(GenerateImageFromDallE("Pixelart de un desierto"));
+        //StartCoroutine(DownloadImage("https://image.tmdb.org/t/p/w500/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg"));
     }
 
     IEnumerator GenerateImageFromDallE(string prompt)
@@ -19,7 +19,7 @@ public class GetImageDallE : MonoBehaviour
         DalleJSON dalleJSON = new DalleJSON();
         dalleJSON.model = "dall-e-2";
         dalleJSON.prompt = prompt;
-        dalleJSON.size = "256x256";
+        dalleJSON.size = "1024x1024";
         dalleJSON.n = 1;
 
         string jsonBody = JsonUtility.ToJson(dalleJSON);
